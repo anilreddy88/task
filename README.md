@@ -84,9 +84,9 @@ helm install user-profile helm/user-profile -f helm/user-profile/values.yaml
 
 ## Security Features
 
-- **Private GKE Autopilot** — no public node IPs, master authorized networks
-- **Private Cloud SQL** — accessible only via VPC internal IP
-- **Workload Identity** — keyless pod-to-GCP authentication
-- **Secret Manager** — database credentials never in manifests or logs
-- **Least-Privilege IAM** — dedicated service accounts with minimal roles
-- **Artifact Registry** — private container image storage
+- **Private GKE Autopilot** - no public node IPs, master authorized networks
+- **Private Cloud SQL** - accessible only via VPC internal IP
+- **Workload Identity** - keyless pod-to-GCP authentication
+- **Secret Manager** - database credentials never in manifests or logs
+- **Least-Privilege IAM** - dedicated service accounts with minimal roles
+- **Artifact Registry** - private container image storage
