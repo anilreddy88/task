@@ -54,14 +54,6 @@ CI/CD: GitHub Actions → Auth (WIF) → Build → Push → Deploy (Helm)
     └── analysis.md         # Design & security analysis
 ```
 
-## Parts
-
-| Part | Description | Status |
-|------|-------------|--------|
-| 1 | Infrastructure as Code (Terraform) | ✅ |
-| 2 | CI/CD Pipeline (GitHub Actions) | ⬜ |
-| 3 | Security, Secrets & Compliance | ⬜ |
-
 ## Prerequisites
 
 - GCP Project with billing enabled
