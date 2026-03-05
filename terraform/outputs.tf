@@ -52,3 +52,14 @@ output "cloudsql_database_name" {
   description = "Name of the application database"
   value       = module.cloudsql.database_name
 }
+
+# Security
+output "workload_gsa_email" {
+  description = "Email of the workload GCP service account"
+  value       = module.security.workload_gsa_email
+}
+
+output "db_secret_id" {
+  description = "Secret Manager secret ID for DB connection string"
+  value       = module.security.db_secret_id
+}

@@ -38,3 +38,18 @@ module "cloudsql" {
 
   depends_on = [module.networking]
 }
+
+module "security" {
+  source = "./modules/security"
+
+  project_id                        = var.project_id
+  region                            = var.region
+  cluster_name                      = var.gke_cluster_name
+  cloudsql_instance_connection_name = module.cloudsql.instance_connection_name
+  db_private_ip                     = module.cloudsql.private_ip_address
+  db_name                           = var.db_name
+  db_user                           = var.db_user
+  db_password                       = var.db_password
+
+  depends_on = [module.gke, module.cloudsql]
+}

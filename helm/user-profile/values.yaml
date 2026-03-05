@@ -21,7 +21,8 @@ resources:
 serviceAccount:
   create: true
   name: user-profile-ksa
-  annotations: {}
+  annotations:
+    iam.gke.io/gcp-service-account: userprofile-workload-sa@PROJECT_ID.iam.gserviceaccount.com
 
 healthCheck:
   liveness:
