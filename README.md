@@ -4,7 +4,53 @@ Design, provision, secure, and automate the deployment of a simulated Authentica
 
 ## Architecture Overview
 
-![Architecture Diagram](docs/architecture-diagram.png)
+```
+                          +-------------------------+
+                          |        GitHub            |
+                          |  +-------------------+   |
+                          |  | Actions CI/CD     |   |
+                          |  | (WIF Auth)        |   |
+                          |  +--------+----------+   |
+                          +-----------|-------------+
+                                      | OIDC Token
+                                      v
++---------------------------------------------------------------------+
+|                        Google Cloud Platform                         |
+|                                                                     |
+|  +------------------+    +--------------------------------------+   |
+|  | Workload Identity|    | Artifact Registry                    |   |
+|  | Federation       |    | (userprofile-repo)                   |   |
+|  +------------------+    +--------------------------------------+   |
+|                                                                     |
+|  +---------- Private VPC (10.0.0.0/20) ------------------------+   |
+|  |                                                              |   |
+|  |  +--- GKE Autopilot (Private) ---+    +-- Cloud SQL ------+ |   |
+|  |  |                               |    |                   | |   |
+|  |  |  +---------------------+      |    |  PostgreSQL 18    | |   |
+|  |  |  | User Profile Service|------|--->|  (Private IP)     | |   |
+|  |  |  | (ClusterIP)         |      |    |                   | |   |
+|  |  |  +---------------------+      |    +-------------------+ |   |
+|  |  |                               |                          |   |
+|  |  |  +---------------------+      |    +-- Secret Manager -+ |   |
+|  |  |  | K8s Service Account |      |    |  DB Connection    | |   |
+|  |  |  | (user-profile-ksa)  |      |    |  String           | |   |
+|  |  |  +----------+----------+      |    +-------------------+ |   |
+|  |  +-------------|--+--------------+                          |   |
+|  |                |  |                                         |   |
+|  |  Cloud NAT    |  |    +-- IAM (Least Privilege) ---------+ |   |
+|  |  (outbound)    |  |    | cloudsql.client                  | |   |
+|  |                |  |    | secretmanager.secretAccessor      | |   |
+|  +----------------|--|----+----------------------------------+-+   |
+|                   |  |                                             |
+|          Workload |  |   +-- GCP Service Account --------+        |
+|          Identity |  +-->| userprofile-workload-sa        |        |
+|                   +----->| (KSA <-> GSA federation)       |        |
+|                          +--------------------------------+        |
++---------------------------------------------------------------------+
+
+CI/CD Flow:
+  Push --> Auth (WIF) --> Build Image --> Push to AR --> Fetch Secret --> Deploy (Helm) --> Verify
+```
 
 ## Project Structure
 
@@ -13,7 +59,8 @@ Design, provision, secure, and automate the deployment of a simulated Authentica
 │   ├── modules/
 │   │   ├── networking/     # VPC, subnets, NAT, firewall
 │   │   ├── gke/            # GKE Autopilot cluster
-│   │   └── cloudsql/       # Cloud SQL PostgreSQL
+│   │   ├── cloudsql/       # Cloud SQL PostgreSQL
+│   │   └── security/       # IAM, Workload Identity, Secret Manager
 │   ├── main.tf             # Root module composition
 │   ├── variables.tf        # Input variables
 │   ├── outputs.tf          # Output values
