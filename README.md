@@ -61,6 +61,10 @@ CI/CD Flow:
 │   │   ├── gke/            # GKE Autopilot cluster
 │   │   ├── cloudsql/       # Cloud SQL PostgreSQL
 │   │   └── security/       # IAM, Workload Identity, Secret Manager
+│   ├── envs/
+│   │   ├── dev/             # Dev environment tfvars + backend
+│   │   ├── staging/         # Staging environment tfvars + backend
+│   │   └── prod/            # Prod environment tfvars + backend
 │   ├── main.tf             # Root module composition
 │   ├── variables.tf        # Input variables
 │   ├── outputs.tf          # Output values
@@ -86,20 +90,20 @@ CI/CD Flow:
 ## Quick Start
 
 ```bash
-# 1. Clone and configure
-cp terraform/terraform.tfvars.example terraform/terraform.tfvars
-# Edit terraform.tfvars with your project values
-
-# 2. Provision infrastructure
+# 1. Provision infrastructure (pick your environment)
 cd terraform
-terraform init
-terraform plan
-terraform apply
+terraform init -backend-config=envs/dev/backend.hcl
+terraform plan -var-file=envs/dev/dev.tfvars
+terraform apply -var-file=envs/dev/dev.tfvars
 
-# 3. Configure kubectl
-gcloud container clusters get-credentials <cluster-name> --region <region>
+# For staging/prod, swap dev with staging or prod:
+# terraform init -backend-config=envs/prod/backend.hcl
+# terraform plan -var-file=envs/prod/prod.tfvars
 
-# 4. Deploy application
+# 2. Configure kubectl
+gcloud container clusters get-credentials userprofile-dev-gke --region us-central1
+
+# 3. Deploy application
 helm install user-profile helm/user-profile -f helm/user-profile/values.yaml
 ```
 
