@@ -4,33 +4,7 @@ Design, provision, secure, and automate the deployment of a simulated Authentica
 
 ## Architecture Overview
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                      GCP Project                        │
-│                                                         │
-│  ┌──────────────── Private VPC ──────────────────────┐  │
-│  │                                                   │  │
-│  │  ┌─────────────────┐    ┌──────────────────────┐  │  │
-│  │  │  GKE Autopilot  │    │   Cloud SQL          │  │  │
-│  │  │  (Private)      │───▶│   (PostgreSQL)       │  │  │
-│  │  │                 │    │   Private IP only     │  │  │
-│  │  │  ┌───────────┐  │    └──────────────────────┘  │  │
-│  │  │  │ User      │  │                              │  │
-│  │  │  │ Profile   │  │    ┌──────────────────────┐  │  │
-│  │  │  │ Service   │  │    │   Secret Manager     │  │  │
-│  │  │  └───────────┘  │    │   (DB Credentials)   │  │  │
-│  │  └─────────────────┘    └──────────────────────┘  │  │
-│  │                                                   │  │
-│  └───────────────────────────────────────────────────┘  │
-│                                                         │
-│  ┌─────────────────┐    ┌────────────────────────────┐  │
-│  │ Artifact         │    │ Workload Identity          │  │
-│  │ Registry         │    │ (KSA ↔ GSA federation)    │  │
-│  └─────────────────┘    └────────────────────────────┘  │
-└─────────────────────────────────────────────────────────┘
-
-CI/CD: GitHub Actions → Auth (WIF) → Build → Push → Deploy (Helm)
-```
+![Architecture Diagram](docs/architecture-diagram.png)
 
 ## Project Structure
 
@@ -58,7 +32,7 @@ CI/CD: GitHub Actions → Auth (WIF) → Build → Push → Deploy (Helm)
 
 - GCP Project with billing enabled
 - `gcloud` CLI authenticated
-- Terraform >= 1.5
+- Terraform >= 1.14
 - Helm >= 3.x
 - `kubectl` configured
 
