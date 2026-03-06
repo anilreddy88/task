@@ -115,3 +115,5 @@ helm install user-profile helm/user-profile -f helm/user-profile/values.yaml
 - **Secret Manager** - database credentials never in manifests or logs
 - **Least-Privilege IAM** - dedicated service accounts with minimal roles
 - **Artifact Registry** - private container image storage
+
+
